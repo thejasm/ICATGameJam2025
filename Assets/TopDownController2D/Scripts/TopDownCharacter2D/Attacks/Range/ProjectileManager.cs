@@ -15,11 +15,15 @@ namespace TopDownCharacter2D.Attacks.Range
         private void Awake()
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
             _projectilesPool = ObjectPool.sharedInstance;
+            if(_projectilesPool == null) {
+                Debug.LogError("ProjectileManager: _projectilesPool is still null! Check ObjectPool setup.");
+            }
         }
 
         public void CreateImpactParticlesAtPosition(Vector3 position, RangedAttackConfig config)
@@ -38,9 +42,17 @@ namespace TopDownCharacter2D.Attacks.Range
         /// <param name="startPosition"> The start position of the projectile</param>
         /// <param name="direction"> The direction of the projectile</param>
         /// <param name="config"> The parameters of the projectile to shoot</param>
-        public void ShootBullet(Vector2 startPosition, Vector2 direction, RangedAttackConfig config)
-        {
+        public void ShootBullet(Vector2 startPosition, Vector2 direction, RangedAttackConfig config) {
+            if(_projectilesPool == null) {
+                Debug.LogError("ProjectileManager: _projectilesPool is null in ShootBullet!");
+                return; // Or handle the error appropriately.
+            }
             GameObject projectileObject = _projectilesPool.GetPooledObject();
+
+            if(projectileObject == null) {
+                Debug.LogError("ProjectileManager: No pooled objects available!");
+                return; // Or handle the error appropriately (e.g., instantiate a new projectile).
+            }
 
             projectileObject.transform.position = startPosition;
             RangedAttackController rangedAttack = projectileObject.GetComponent<RangedAttackController>();

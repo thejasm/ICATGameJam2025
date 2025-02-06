@@ -20,7 +20,7 @@ namespace TopDownCharacter2D.Stats
         public readonly ObservableCollection<CharacterStats>
             statsModifiers = new ObservableCollection<CharacterStats>();
 
-        public CharacterStats CurrentStats { get; private set; }
+        public CharacterStats CurrentStats { get; set; }
 
         private void Awake()
         {
@@ -70,9 +70,9 @@ namespace TopDownCharacter2D.Stats
         /// </summary>
         /// <param name="operation"> The operation to use to update the stats </param>
         /// <param name="newModifier"> The stat modifier to apply </param>
-        private void UpdateStats(Func<float, float, float> operation, CharacterStats newModifier)
+        public void UpdateStats(Func<float, float, float> operation, CharacterStats newModifier)
         {
-            CurrentStats.maxHealth = (int) operation(CurrentStats.maxHealth, newModifier.maxHealth);
+            CurrentStats.maxHealth = operation(CurrentStats.maxHealth, newModifier.maxHealth);
             CurrentStats.speed = operation(CurrentStats.speed, newModifier.speed);
             if (newModifier.attackConfig == null || CurrentStats.attackConfig == null)
             {
@@ -189,7 +189,7 @@ namespace TopDownCharacter2D.Stats
         private const float MinAttackSpeed = .1f;
 
         private const float MinSpeed = 1f;
-        private const int MinMaxHealth = 1;
+        private const float MinMaxHealth = 1;
 
         #endregion
     }

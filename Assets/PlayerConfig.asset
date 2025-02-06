@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aca20c846ab409baaeb6c4782674e6c, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  size: 0.6
-  delay: 0.15
-  power: 1
+  size: 0.5
+  delay: 0.5
+  power: 0.5
   speed: 15
   target:
     serializedVersion: 2
     m_Bits: 64
   duration: 2
-  spread: 0
+  spread: 1
   numberOfProjectilesPerShot: 1
   multipleProjectilesAngle: 7
   projectileColor: {r: 1, g: 0.8455281, b: 0, a: 1}

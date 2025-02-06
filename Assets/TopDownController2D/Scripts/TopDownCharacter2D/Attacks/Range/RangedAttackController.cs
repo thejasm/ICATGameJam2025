@@ -1,4 +1,7 @@
+using System;
+using TopDownCharacter2D.Controllers;
 using TopDownCharacter2D.Health;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace TopDownCharacter2D.Attacks.Range
@@ -18,10 +21,8 @@ namespace TopDownCharacter2D.Attacks.Range
         private bool _isReady;
         private Rigidbody2D _rb;
         private SpriteRenderer _spriteRenderer;
-        private TrailRenderer _trail;
         private ProjectileManager _projectileManager;
 
-        private bool fxOnDestroy = true;
 
         private bool DestroyOnHit { get; set; } = true;
 
@@ -31,7 +32,6 @@ namespace TopDownCharacter2D.Attacks.Range
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rb = GetComponent<Rigidbody2D>();
-            _trail = GetComponent<TrailRenderer>();
         }
 
         private void Update()
@@ -51,35 +51,6 @@ namespace TopDownCharacter2D.Attacks.Range
             _rb.velocity = _direction * _config.speed;
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (levelCollisionLayer.value == (levelCollisionLayer.value | (1 << other.gameObject.layer)))
-            {
-                if (DestroyOnHit)
-                {
-                    DestroyProjectile(other.ClosestPoint(transform.position) - _direction * .2f, fxOnDestroy);
-                }
-            }
-            else if (_config.target.value == (_config.target.value | (1 << other.gameObject.layer)))
-            {
-                HealthSystem health = other.gameObject.GetComponent<HealthSystem>();
-                if (health != null)
-                {
-                    health.ChangeHealth(-_config.power);
-                    TopDownKnockBack knockBack = other.gameObject.GetComponent<TopDownKnockBack>();
-                    if (knockBack != null)
-                    {
-                        knockBack.ApplyKnockBack(transform);
-                    }
-                }
-
-                if (DestroyOnHit)
-                {
-                    DestroyProjectile(other.ClosestPoint(transform.position), fxOnDestroy);
-                }
-            }
-        }
-
         /// <summary>
         ///     Initializes the ranged attack with the given configuration
         /// </summary>
@@ -92,7 +63,6 @@ namespace TopDownCharacter2D.Attacks.Range
             _config = config;
             _direction = direction;
             UpdateProjectileSprite();
-            _trail.Clear();
             _currentDuration = 0f;
             _spriteRenderer.color = config.projectileColor;
 
@@ -102,7 +72,7 @@ namespace TopDownCharacter2D.Attacks.Range
         /// <summary>
         ///     Changes the sprite of the projectile according to its size
         /// </summary>
-        private void UpdateProjectileSprite()
+        public void UpdateProjectileSprite()
         {
             transform.localScale = Vector3.one * _config.size;
         }
@@ -112,7 +82,7 @@ namespace TopDownCharacter2D.Attacks.Range
         /// </summary>
         /// <param name="pos">The position where to create the particles</param>
         /// <param name="createFx">Whether to create particles or not</param>
-        private void DestroyProjectile(Vector2 pos, bool createFx)
+        public void DestroyProjectile(Vector2 pos, bool createFx)
         {
             if (createFx)
             {
