@@ -1,26 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aca20c846ab409baaeb6c4782674e6c, type: 3}
-  m_Name: PlayerConfig
-  m_EditorClassIdentifier: 
-  size: 0.5
-  delay: 0.5
-  power: 0.5
-  speed: 15
-  target:
-    serializedVersion: 2
-    m_Bits: 64
-  duration: 2
-  spread: 1
-  numberOfProjectilesPerShot: 1
-  multipleProjectilesAngle: 7
-  projectileColor: {r: 1, g: 0.8455281, b: 0, a: 1}
+version https://git-lfs.github.com/spec/v1
+oid sha256:8698164773cb87f711fc01fce5858cd2aa94f334accdd257a5be30b6f893494a
+size 641

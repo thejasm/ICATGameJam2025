@@ -11,35 +11,44 @@ namespace TopDownCharacter2D.Stats
 {
     /// <summary>
     ///     Handles the stats and their modification for a character
-    /// </summary>
+    /// </summary>{
     public class CharacterStatsHandler : MonoBehaviour
     {
-        [SerializeField] [Tooltip("The default stats of this character")]
+        [SerializeField]
+        [Tooltip("The default stats of this character")]
         private CharacterStats baseStats;
 
-        public readonly ObservableCollection<CharacterStats>
-            statsModifiers = new ObservableCollection<CharacterStats>();
+        public readonly ObservableCollection<CharacterStats> statsModifiers = new ObservableCollection<CharacterStats>();
 
         public CharacterStats CurrentStats { get; set; }
 
         private void Awake()
         {
+            if (baseStats == null)
+            {
+                Debug.LogError("Base stats are not assigned!");
+                return;
+            }
+
             UpdateCharacterStats(null, null);
             statsModifiers.CollectionChanged += UpdateCharacterStats;
         }
 
-        /// <summary>
-        ///     Called when the list of stat modifiers changes, update the stats accordingly
-        /// </summary>
         private void UpdateCharacterStats(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (baseStats == null)
+            {
+                Debug.LogError("Base stats are not assigned!");
+                return;
+            }
+
             AttackConfig config = null;
             if (baseStats.attackConfig != null)
             {
                 config = Instantiate(baseStats.attackConfig);
             }
 
-            CurrentStats = new CharacterStats {attackConfig = config};
+            CurrentStats = new CharacterStats { attackConfig = config };
             UpdateStats((a, b) => b, baseStats);
             if (CurrentStats.attackConfig != null)
             {
@@ -65,13 +74,14 @@ namespace TopDownCharacter2D.Stats
             LimitAllStats();
         }
 
-        /// <summary>
-        ///     Updates the stats
-        /// </summary>
-        /// <param name="operation"> The operation to use to update the stats </param>
-        /// <param name="newModifier"> The stat modifier to apply </param>
         public void UpdateStats(Func<float, float, float> operation, CharacterStats newModifier)
         {
+            if (CurrentStats == null)
+            {
+                Debug.LogError("CurrentStats is not assigned!");
+                return;
+            }
+
             CurrentStats.maxHealth = operation(CurrentStats.maxHealth, newModifier.maxHealth);
             CurrentStats.speed = operation(CurrentStats.speed, newModifier.speed);
             if (newModifier.attackConfig == null || CurrentStats.attackConfig == null)
@@ -79,13 +89,10 @@ namespace TopDownCharacter2D.Stats
                 return;
             }
 
-            CurrentStats.attackConfig.delay =
-                operation(CurrentStats.attackConfig.delay, newModifier.attackConfig.delay);
-            CurrentStats.attackConfig.power =
-                operation(CurrentStats.attackConfig.power, newModifier.attackConfig.power);
+            CurrentStats.attackConfig.delay = operation(CurrentStats.attackConfig.delay, newModifier.attackConfig.delay);
+            CurrentStats.attackConfig.power = operation(CurrentStats.attackConfig.power, newModifier.attackConfig.power);
             CurrentStats.attackConfig.size = operation(CurrentStats.attackConfig.size, newModifier.attackConfig.size);
-            CurrentStats.attackConfig.speed =
-                operation(CurrentStats.attackConfig.speed, newModifier.attackConfig.speed);
+            CurrentStats.attackConfig.speed = operation(CurrentStats.attackConfig.speed, newModifier.attackConfig.speed);
 
             if (CurrentStats.attackConfig.GetType() != newModifier.attackConfig.GetType())
             {
@@ -95,8 +102,7 @@ namespace TopDownCharacter2D.Stats
             switch (CurrentStats.attackConfig)
             {
                 case RangedAttackConfig _:
-                    ApplyRangedStats(operation,
-                        newModifier); // This method is only called if the character uses a ranged weapon
+                    ApplyRangedStats(operation, newModifier);
                     break;
                 case MeleeAttackConfig _:
                     ApplyMeleeStats(operation, newModifier);
